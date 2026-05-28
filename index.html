@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>마법사의 방</title>
+<style>
+body{margin:0;background:#111;display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif}#game{position:relative;width:768px;height:512px}#room{width:100%;height:100%;display:block}.hotspot{position:absolute;background:transparent;border:none;cursor:pointer}.book{left:180px;top:150px;width:70px;height:50px}.crystal{left:355px;top:220px;width:80px;height:80px}.window{left:315px;top:70px;width:120px;height:120px}.bed{left:70px;top:250px;width:130px;height:130px}.closet{left:530px;top:100px;width:140px;height:170px}#dialogue{position:absolute;left:0;bottom:0;width:100%;background:rgba(0,0,0,.9);color:white;padding:20px;box-sizing:border-box;font-size:20px;white-space:pre-line}#popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);display:none;justify-content:center;align-items:center}.popup-content{background:#222;padding:20px;border-radius:10px;text-align:center;color:white;max-width:90%}.popup-content img{max-width:500px;width:100%}input{margin:10px;padding:10px;font-size:18px;width:100px}button.choice{margin:5px;padding:10px 20px;font-size:18px}.close-btn{margin-top:15px;padding:10px 20px}
+</style>
+</head>
+<body>
+<div id="game">
+<img id="room" src="./images/room.webp" alt="마법사의 방">
+<button class="hotspot book" onclick="openBook()" aria-label="책"></button>
+<button class="hotspot crystal" onclick="openCrystal()" aria-label="수정구"></button>
+<button class="hotspot window" onclick="showDialogue('창문으로 뛰어내리는 것은 하면 안되는 행동이지..')" aria-label="창문"></button>
+<button class="hotspot bed" onclick="showDialogue('지금은 자면 안 돼.. 바쁘다고!')" aria-label="침대"></button>
+<button class="hotspot closet" onclick="showDialogue('이 옷들은 모험에 도움이 안 되는 걸..')" aria-label="장롱"></button>
+<div id="dialogue">방 안을 조사해보자.</div>
+</div>
+<div id="popup"><div class="popup-content" id="popup-content"></div></div>
+<script>
+let bookSolved=false;let hasMap=false;
+function showDialogue(text){document.getElementById('dialogue').innerText=text;}
+function closePopup(){document.getElementById('popup').style.display='none';}
+function openBook(){document.getElementById('popup').style.display='flex';document.getElementById('popup-content').innerHTML=`<img src="./images/book_problem.webp" alt="책 문제"><div><input id="xAnswer" placeholder="x"><input id="yAnswer" placeholder="y"></div><button class="choice" onclick="checkBook()">제출</button><br><button class="close-btn" onclick="closePopup()">닫기</button>`;}
+function checkBook(){const x=document.getElementById('xAnswer').value.trim();const y=document.getElementById('yAnswer').value.trim();if(x==='3'&&y==='5'){bookSolved=true;closePopup();showDialogue('마법구를 해석하는 방법을 알아냈다.');}else{alert('틀렸다... 다시 생각해보자.');}}
+function openCrystal(){if(!bookSolved){showDialogue('수정구의 빛이 보이긴 하지만.. 해석하려면 먼저 해석하는 방법을 알아내야할 거 같다.');return;}document.getElementById('popup').style.display='flex';document.getElementById('popup-content').innerHTML=`<img src="./images/crystal_problem.webp" alt="수정구 문제"><div><button class="choice" onclick="checkCrystal(1)">1</button><button class="choice" onclick="checkCrystal(2)">2</button><button class="choice" onclick="checkCrystal(3)">3</button><button class="choice" onclick="checkCrystal(4)">4</button><button class="choice" onclick="checkCrystal(5)">5</button></div><button class="close-btn" onclick="closePopup()">닫기</button>`;}
+function checkCrystal(answer){if(answer===3){hasMap=true;closePopup();showDialogue('마법구를 해석해 가야할 곳을 알아냈다.\n우리는 용사를 만나러 가야한다.\n용사의 마을로 이동하자.\n\n🗺️ 지도를 얻었다!');}else{alert('수정구의 빛이 흔들린다...');}}
+</script>
+</body>
+</html>
