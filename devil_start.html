@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <title>마왕성 입구</title>
 <style>
+
+*{box-sizing:border-box;}
 body{
     margin:0;
     background:#000;
@@ -14,140 +16,21 @@ body{
     overflow:hidden;
     font-family:sans-serif;
 }
-
-#game{
-    position:relative;
-    width:95vw;
-    max-width:1400px;
-    aspect-ratio:1365/1024;
-    background:#000;
-}
-
-#bg{
-    width:100%;
-    height:100%;
-    display:block;
-    object-fit:contain;
-}
-
 .hotspot{
     position:absolute;
     background:transparent;
     border:none;
     cursor:pointer;
     z-index:20;
+    padding:0;
+    margin:0;
 }
-
-/* 클릭 위치 확인할 때만 주석 해제
+/*
 .hotspot{
     outline:3px solid red;
     background:rgba(255,0,0,0.15);
 }
 */
-
-/* 성 부분 */
-.castleArea{
-    left:12%;
-    top:2%;
-    width:76%;
-    height:36%;
-}
-
-/* 악마 */
-.devil{
-    left:35%;
-    top:35%;
-    width:28%;
-    height:31%;
-    z-index:30;
-}
-
-/* 용사와 마법사 */
-.party{
-    left:33%;
-    top:70%;
-    width:32%;
-    height:27%;
-    z-index:30;
-}
-
-/* 전체 바닥/그 외 */
-.otherArea{
-    position:absolute;
-    inset:0;
-    background:transparent;
-    border:none;
-    cursor:pointer;
-    z-index:1;
-}
-
-/* 대사창 */
-#dialogueWrap{
-    position:absolute;
-    left:50%;
-    bottom:2%;
-    transform:translateX(-50%);
-    width:88%;
-    height:20%;
-    display:none;
-    justify-content:center;
-    align-items:center;
-    z-index:60;
-}
-
-#dialogueBox{
-    position:absolute;
-    inset:0;
-    background:rgba(20,12,5,0.9);
-    border:5px double #d7a74b;
-    border-radius:16px;
-    box-shadow:0 0 20px rgba(0,0,0,0.9);
-}
-
-#dialogueText{
-    position:relative;
-    z-index:2;
-    width:82%;
-    text-align:center;
-    color:#ffe6a8;
-    font-size:clamp(18px,2vw,30px);
-    font-weight:bold;
-    line-height:1.45;
-    word-break:keep-all;
-}
-
-/* 팝업 */
-#popup{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.82);
-    display:none;
-    justify-content:center;
-    align-items:center;
-    z-index:100;
-}
-
-#popupPanel{
-    width:min(92vw,800px);
-    max-height:92vh;
-    overflow:auto;
-    background:#1b120a;
-    color:white;
-    border:4px solid #8d612b;
-    border-radius:16px;
-    padding:20px;
-    text-align:center;
-    box-shadow:0 0 30px rgba(0,0,0,0.85);
-}
-
-#popupPanel img{
-    width:100%;
-    max-height:68vh;
-    object-fit:contain;
-    border-radius:8px;
-    margin-bottom:12px;
-}
-
 button{
     padding:10px 18px;
     margin:6px;
@@ -159,74 +42,245 @@ button{
     background:#f0c47b;
     color:#2b1607;
 }
+input{
+    padding:10px;
+    width:130px;
+    font-size:20px;
+    text-align:center;
+    border-radius:8px;
+    border:2px solid #8d612b;
+}
+#popup{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.82);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:100;
+}
+#popupPanel{
+    width:min(94vw,920px);
+    max-height:94vh;
+    overflow:auto;
+    background:#1b120a;
+    color:white;
+    border:4px solid #8d612b;
+    border-radius:16px;
+    padding:22px;
+    text-align:center;
+    box-shadow:0 0 30px rgba(0,0,0,0.85);
+}
+#popupPanel img{
+    width:100%;
+    max-height:72vh;
+    object-fit:contain;
+    border-radius:8px;
+    margin-bottom:12px;
+}
+#dialogueWrap{
+    position:absolute;
+    left:50%;
+    bottom:2%;
+    transform:translateX(-50%);
+    width:88%;
+    height:20%;
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:60;
+    pointer-events:none;
+}
+#dialogueFallback{
+    position:absolute;
+    inset:0;
+    background:rgba(20,12,5,0.9);
+    border:5px double #d7a74b;
+    border-radius:16px;
+}
+#dialogueImage{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:fill;
+    z-index:1;
+}
+#dialogueText{
+    position:relative;
+    z-index:2;
+    width:78%;
+    text-align:center;
+    font-size:clamp(18px,2vw,30px);
+    font-weight:bold;
+    line-height:1.45;
+    word-break:keep-all;
+    white-space:pre-line;
+}
+#dialogueText::after,
+.typeText::after{
+    content:"";
+    display:inline-block;
+    width:0.55em;
+    height:1em;
+    margin-left:4px;
+    vertical-align:-0.12em;
+    background:currentColor;
+    animation:blinkCursor 0.75s steps(1) infinite;
+}
+#dialogueText.done::after,
+.typeText.done::after{
+    display:none;
+}
+@keyframes blinkCursor{
+    50%{opacity:0;}
+}
+.mapWrap{
+    position:relative;
+    width:100%;
+    margin-top:10px;
+}
+.mapWrap img{
+    width:100%;
+    max-height:none!important;
+    display:block;
+}
+
+#game{position:relative;width:95vw;max-width:1400px;aspect-ratio:1365/1024;background:#000;}
+#bg{width:100%;height:100%;display:block;object-fit:contain;pointer-events:none;}
+.castleArea{left:12%;top:2%;width:76%;height:36%;}
+.devil{left:35%;top:35%;width:28%;height:31%;z-index:30;}
+.party{left:33%;top:70%;width:32%;height:27%;z-index:30;}
+.otherArea{position:absolute;inset:0;background:transparent;border:none;cursor:pointer;z-index:1;}
+#dialogueText{color:#2b1607;transform:translateY(6px);}
+#defeatOverlay{position:fixed;inset:0;background:#000;display:none;justify-content:center;align-items:center;z-index:200;}
+#defeatScene{position:relative;width:min(96vw,1365px);aspect-ratio:1365/1024;background:#000;}
+#defeatScene>img{width:100%;height:100%;object-fit:contain;display:block;}
+#defeatDialogue{position:absolute;left:50%;top:4%;transform:translateX(-50%);width:82%;height:18%;display:flex;justify-content:center;align-items:center;}
+#defeatDialogue img{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;}
+#defeatText{position:relative;z-index:2;width:75%;text-align:center;color:#2b1607;font-size:clamp(20px,2.3vw,34px);font-weight:bold;line-height:1.45;transform:translateY(6px);word-break:keep-all;}
+#enterCastleBtn{position:absolute;left:50%;bottom:5%;transform:translateX(-50%);font-size:clamp(18px,2vw,28px);padding:14px 28px;}
 </style>
 </head>
-
 <body>
-
 <div id="game">
-    <img id="bg" src="./images/devil_go.webp" alt="마왕성 입구">
+<img id="bg" src="./images/devil_go.webp" alt="마왕성 입구">
 
-    <button class="otherArea" onclick="say('돌아가는 건 안 돼. 앞으로 나아가자.')"></button>
+<button class="otherArea" onclick="say('돌아가는 건 안 돼. 앞으로 나아가자.')"></button>
+<button class="hotspot castleArea" onclick="say('위압감이 느껴진다. 이 성 안에 들어가야한다니...')"></button>
+<button class="hotspot devil" onclick="openDevilProblem()"></button>
+<button class="hotspot party" onclick="say('우리가 해낼 수 있을까?')"></button>
 
-    <button class="hotspot castleArea" onclick="say('위압감이 느껴진다. 이 성 안에 들어가야한다니...')"></button>
-    <button class="hotspot devil" onclick="openDevilProblem()"></button>
-    <button class="hotspot party" onclick="say('우리가 해낼 수 있을까?')"></button>
-
-    <div id="dialogueWrap">
-        <div id="dialogueBox"></div>
-        <div id="dialogueText"></div>
-    </div>
+<div id="dialogueWrap">
+<div id="dialogueFallback"></div>
+<img id="dialogueImage" src="./images/de_dia.webp" alt="">
+<div id="dialogueText"></div>
+</div>
 </div>
 
-<div id="popup">
-    <div id="popupPanel"></div>
+<div id="popup"><div id="popupPanel"></div></div>
+
+<div id="defeatOverlay">
+<div id="defeatScene">
+<img src="./images/devil_die.webp" alt="쓰러진 악마">
+<div id="defeatDialogue">
+<img src="./images/de_dia.webp" alt="">
+<div id="defeatText">악마가 쓰러졌다.<br>마왕성 안으로 들어가자.</div>
+</div>
+<button id="enterCastleBtn" onclick="goFinal()">마왕성으로 들어가자!</button>
+</div>
 </div>
 
 <script>
-let timer = null;
+const defeatOverlay=document.getElementById("defeatOverlay");
 
-const dialogueWrap = document.getElementById("dialogueWrap");
-const dialogueText = document.getElementById("dialogueText");
-const popup = document.getElementById("popup");
-const popupPanel = document.getElementById("popupPanel");
+let timer=null;
+let typingTimer=null;
+
+const dialogueWrap=document.getElementById("dialogueWrap");
+const dialogueText=document.getElementById("dialogueText");
+const popup=document.getElementById("popup");
+const popupPanel=document.getElementById("popupPanel");
+const dialogueImage=document.getElementById("dialogueImage");
+
+if(dialogueImage){
+    dialogueImage.onerror=function(){
+        dialogueImage.style.display="none";
+    };
+}
+
+function typeText(element,text,speed=28,afterDone=null){
+    clearInterval(typingTimer);
+    element.classList.remove("done");
+    element.innerText="";
+    let i=0;
+    typingTimer=setInterval(function(){
+        element.innerText=text.slice(0,i);
+        i++;
+        if(i>text.length){
+            clearInterval(typingTimer);
+            element.classList.add("done");
+            if(afterDone){afterDone();}
+        }
+    },speed);
+}
 
 function say(text){
     clearTimeout(timer);
-    dialogueText.innerText = text;
-    dialogueWrap.style.display = "flex";
-
-    timer = setTimeout(function(){
-        dialogueWrap.style.display = "none";
-    },3000);
+    clearInterval(typingTimer);
+    dialogueWrap.style.display="flex";
+    typeText(dialogueText,text,28);
+    timer=setTimeout(function(){
+        clearInterval(typingTimer);
+        dialogueWrap.style.display="none";
+    },4300);
 }
 
 function openPopup(html){
     clearTimeout(timer);
-    dialogueWrap.style.display = "none";
-    popupPanel.innerHTML = html;
-    popup.style.display = "flex";
+    clearInterval(typingTimer);
+    if(dialogueWrap){dialogueWrap.style.display="none";}
+    popupPanel.innerHTML=html;
+    popup.style.display="flex";
 }
 
 function closePopup(){
-    popup.style.display = "none";
+    popup.style.display="none";
 }
 
-popup.addEventListener("click", function(e){
-    if(e.target === popup){
+popup.addEventListener("click",function(e){
+    if(e.target===popup){
         closePopup();
     }
 });
 
+
 function openDevilProblem(){
     openPopup(`
-        <img src="./images/devil.webp" alt="악마 문제">
+        <img src="./images/devil_door.webp" alt="악마 문제">
         <div>
+            <input id="devilAnswer" placeholder="정답 입력">
+            <button onclick="checkDevil()">제출</button>
             <button onclick="closePopup()">닫기</button>
         </div>
     `);
 }
-</script>
 
+function checkDevil(){
+    const answer=document.getElementById("devilAnswer").value.trim();
+
+    if(answer==="-32"){
+        closePopup();
+        defeatOverlay.style.display="flex";
+    }else{
+        closePopup();
+        say("악마가 비웃고 있다...");
+    }
+}
+
+function goFinal(){
+    window.location.href="final.html";
+}
+</script>
 </body>
 </html>
