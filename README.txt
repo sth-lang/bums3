@@ -1,10 +1,16 @@
-모바일 대응 + 대사창 수정 + 바로 이동 버튼 제거 버전
+고정 캔버스 방식 최종 수정본
 
-진행 방식:
-- 지도에서는 직접 위치를 눌러 이동
-- 마법사의 방 지도: 왼쪽 아래 용사의 마을 클릭
-- 용사의 마을 지도: 오른쪽 위 마왕성 클릭
-- 최종 엔딩의 '모험을 다시 시작하기' 버튼은 유지
+수정:
+- PC/모바일에서 화면 비율이 무너지지 않도록 고정 캔버스 방식 적용
+- 다음 방 이동 경로 재확인:
+  index.html -> village.html
+  village.html -> devil_start.html
+  devil_start.html -> final.html
+  final.html -> index.html
+- 지도에서는 위치 클릭으로만 이동
+- 대사창 글자색 원래 톤 유지
+- 목숨 UI 오른쪽 상단 작게 유지
+- 오답 3회 실패 유지
 
 필수 이미지:
 room.webp, dialogue_box.webp, book_problem.webp, crystal_problem.webp, maps.webp,

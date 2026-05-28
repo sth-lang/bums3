@@ -12,8 +12,9 @@ html,body{
     margin:0;
     padding:0;
     width:100%;
-    min-height:100%;
+    height:100%;
     background:#000;
+    overflow:hidden;
     font-family:sans-serif;
 }
 
@@ -21,13 +22,14 @@ body{
     display:flex;
     justify-content:center;
     align-items:center;
-    min-height:100vh;
-    overflow:hidden;
 }
 
 #game{
     position:relative;
-    width:min(96vw, 1400px);
+    width:min(100vw, calc(100vh * var(--aspect)));
+    height:min(100vh, calc(100vw / var(--aspect)));
+    max-width:1400px;
+    max-height:100vh;
     background:#000;
     overflow:hidden;
 }
@@ -51,7 +53,7 @@ body{
     margin:0;
 }
 
-/* 클릭 위치 확인용
+/* 클릭 위치 확인할 때만 주석 해제
 .hotspot{
     outline:3px solid red;
     background:rgba(255,0,0,0.15);
@@ -60,10 +62,10 @@ body{
 
 #lifeUI{
     position:absolute;
-    top:2.5%;
-    right:2.5%;
-    z-index:999;
-    font-size:clamp(15px,2.4vw,26px);
+    top:2.2%;
+    right:2.3%;
+    z-index:80;
+    font-size:clamp(14px,2.2vw,24px);
     letter-spacing:2px;
     text-shadow:2px 2px 0 #000;
     user-select:none;
@@ -106,8 +108,8 @@ body{
     z-index:2;
     width:76%;
     text-align:center;
-    font-size:clamp(13px,2.2vw,30px);
-    font-weight:bold;
+    font-size:clamp(13px,2vw,30px);
+    font-weight:900;
     line-height:1.42;
     word-break:keep-all;
     white-space:pre-line;
@@ -122,7 +124,7 @@ body{
     margin-left:4px;
     vertical-align:-0.12em;
     background:currentColor;
-    animation:blinkCursor 0.75s steps(1) infinite;
+    animation:blinkCursor .75s steps(1) infinite;
 }
 
 #dialogueText.done::after,
@@ -145,7 +147,7 @@ body{
 }
 
 #popupPanel{
-    width:min(94vw,920px);
+    width:min(94vw,980px);
     max-height:94vh;
     overflow:auto;
     background:#1b120a;
@@ -169,11 +171,11 @@ button{
     padding:10px 18px;
     margin:6px;
     font-size:18px;
-    font-weight:bold;
+    font-weight:900;
     cursor:pointer;
     border-radius:8px;
     border:2px solid #8d612b;
-    background:#f0c47b;
+    background:linear-gradient(#f0c47b,#b5792c);
     color:#2b1607;
 }
 
@@ -198,34 +200,23 @@ input{
     display:block;
 }
 
-@media (orientation: portrait){
-    body{
-        align-items:flex-start;
-        padding-top:8vh;
-        overflow:auto;
-    }
-
-    #game{
-        width:100vw;
-        max-width:none;
-    }
-
+@media (orientation:portrait){
     #dialogueWrap{
-        width:96%;
+        width:92%;
         height:22%;
-        bottom:1.2%;
+        bottom:2%;
     }
 
     #dialogueText{
-        width:70%;
-        font-size:clamp(12px,3.3vw,20px);
-        line-height:1.35;
+        width:72%;
+        font-size:clamp(12px,3vw,20px);
+        line-height:1.32;
     }
 
     #lifeUI{
+        font-size:clamp(14px,3.6vw,20px);
         top:2%;
         right:2%;
-        font-size:clamp(14px,4vw,22px);
     }
 
     #popupPanel{
@@ -239,25 +230,25 @@ input{
     }
 }
 
-#game{aspect-ratio:1365/1024;}
+#game{--aspect:1.333984375;}
 #dialogueText{color:#2b1607;transform:translateY(6px);}
 .castleArea{left:12%;top:2%;width:76%;height:36%;}
 .devil{left:35%;top:35%;width:28%;height:31%;z-index:30;}
 .party{left:33%;top:70%;width:32%;height:27%;z-index:30;}
 .otherArea{position:absolute;inset:0;background:transparent;border:none;cursor:pointer;z-index:1;}
 #defeatOverlay{position:fixed;inset:0;background:#000;display:none;justify-content:center;align-items:center;z-index:200;}
-#defeatScene{position:relative;width:min(96vw,1365px);aspect-ratio:1365/1024;background:#000;}
+#defeatScene{position:relative;width:min(100vw, calc(100vh * 1.333984375));height:min(100vh, calc(100vw / 1.333984375));background:#000;}
 #defeatScene>img{width:100%;height:100%;object-fit:contain;display:block;}
 #defeatDialogue{position:absolute;left:50%;top:4%;transform:translateX(-50%);width:82%;height:18%;display:flex;justify-content:center;align-items:center;}
 #defeatDialogue img{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;}
-#defeatText{position:relative;z-index:2;width:75%;text-align:center;color:#2b1607;font-size:clamp(20px,2.3vw,34px);font-weight:bold;line-height:1.45;transform:translateY(6px);word-break:keep-all;}
-#enterCastleBtn{position:absolute;left:50%;bottom:5%;transform:translateX(-50%);font-size:clamp(18px,2vw,28px);padding:14px 28px;}
+#defeatText{position:relative;z-index:2;width:75%;text-align:center;color:#2b1607;font-size:clamp(16px,2.3vw,34px);font-weight:bold;line-height:1.45;transform:translateY(6px);word-break:keep-all;}
+#enterCastleBtn{position:absolute;left:50%;bottom:5%;transform:translateX(-50%);font-size:clamp(16px,2vw,28px);padding:14px 28px;}
 </style>
 </head>
 <body>
 <div id="game">
 <div id="lifeUI">❤️❤️❤️</div>
-<img id="bg" class="bgImg" src="./images/devil_go.webp" alt="마왕성 입구">
+<img class="bgImg" src="./images/devil_go.webp" alt="마왕성 입구">
 
 <button class="otherArea" onclick="say('돌아가는 건 안 돼. 앞으로 나아가자.')"></button>
 <button class="hotspot castleArea" onclick="say('위압감이 느껴진다. 이 성 안에 들어가야한다니...')"></button>
@@ -369,7 +360,7 @@ function wrongAnswer(message="틀렸다..."){
     if(wrongCount>=MAX_WRONG){
         showFail();
     }else{
-        say(message+"\n남은 기회: "+(MAX_WRONG-wrongCount));
+        say(message+"\\n남은 기회: "+(MAX_WRONG-wrongCount));
     }
 }
 
