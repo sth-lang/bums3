@@ -20,6 +20,22 @@ body{margin:0;background:#000;display:flex;justify-content:center;align-items:ce
 #dialogueImage{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;}
 #dialogueText{position:relative;z-index:2;width:75%;text-align:center;font-size:clamp(18px,2vw,30px);font-weight:bold;line-height:1.4;color:#2b1607;transform:translateY(8px);word-break:keep-all;}
 
+#dialogueText::after{
+    content:"";
+    display:inline-block;
+    width:0.55em;
+    height:1em;
+    margin-left:4px;
+    vertical-align:-0.12em;
+    background:currentColor;
+    animation:blinkCursor 0.75s steps(1) infinite;
+}
+
+@keyframes blinkCursor{
+    50%{opacity:0;}
+}
+
+
 #popup{position:fixed;inset:0;background:rgba(0,0,0,0.8);display:none;justify-content:center;align-items:center;z-index:100;}
 #popupPanel{background:#1b120a;padding:20px;border-radius:15px;width:min(94vw,920px);max-height:94vh;overflow:auto;text-align:center;color:white;border:4px solid #8d612b;box-shadow:0 0 30px rgba(0,0,0,0.8);}
 #popupPanel img{width:100%;max-height:68vh;object-fit:contain;border-radius:8px;}
@@ -76,6 +92,7 @@ input{padding:10px;width:90px;font-size:18px;text-align:center;}
 let bookSolved=false;
 let hasMap=false;
 let timer=null;
+let typingTimer=null;
 
 const dialogueWrap=document.getElementById("dialogueWrap");
 const dialogueText=document.getElementById("dialogueText");
@@ -86,13 +103,29 @@ document.getElementById("dialogueImage").onerror=function(){this.style.display="
 
 function say(text){
 clearTimeout(timer);
-dialogueText.innerText=text;
+clearInterval(typingTimer);
+
+dialogueText.innerText="";
 dialogueWrap.style.display="flex";
-timer=setTimeout(()=>{dialogueWrap.style.display="none";},3000);
+
+let i=0;
+typingTimer=setInterval(()=>{
+dialogueText.innerText=text.slice(0,i);
+i++;
+if(i>text.length){
+clearInterval(typingTimer);
+}
+},28);
+
+timer=setTimeout(()=>{
+clearInterval(typingTimer);
+dialogueWrap.style.display="none";
+},4200);
 }
 
 function openPopup(html){
 clearTimeout(timer);
+clearInterval(typingTimer);
 dialogueWrap.style.display="none";
 popupPanel.innerHTML=html;
 popup.style.display="flex";

@@ -87,6 +87,22 @@ body{
     word-break:keep-all;
 }
 
+#dialogueText::after{
+    content:"";
+    display:inline-block;
+    width:0.55em;
+    height:1em;
+    margin-left:4px;
+    vertical-align:-0.12em;
+    background:currentColor;
+    animation:blinkCursor 0.75s steps(1) infinite;
+}
+
+@keyframes blinkCursor{
+    50%{opacity:0;}
+}
+
+
 #sleepOverlay{
     position:absolute;
     inset:0;
@@ -210,6 +226,7 @@ let fountainSolved = false;
 let shopSolved = false;
 let selectedChoices = [];
 let timer = null;
+let typingTimer = null;
 
 const dialogueWrap = document.getElementById("dialogueWrap");
 const dialogueText = document.getElementById("dialogueText");
@@ -224,16 +241,30 @@ dialogueImage.onerror = function(){
 
 function say(text){
     clearTimeout(timer);
-    dialogueText.innerText = text;
+    clearInterval(typingTimer);
+
+    dialogueText.innerText = "";
     dialogueWrap.style.display = "flex";
 
+    let i = 0;
+    typingTimer = setInterval(function(){
+        dialogueText.innerText = text.slice(0, i);
+        i++;
+
+        if(i > text.length){
+            clearInterval(typingTimer);
+        }
+    }, 28);
+
     timer = setTimeout(function(){
+        clearInterval(typingTimer);
         dialogueWrap.style.display = "none";
-    },3000);
+    },4200);
 }
 
 function openPopup(html){
     clearTimeout(timer);
+    clearInterval(typingTimer);
     dialogueWrap.style.display = "none";
     popupPanel.innerHTML = html;
     popup.style.display = "flex";
