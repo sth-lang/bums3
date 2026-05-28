@@ -2,32 +2,43 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>마왕성 입구</title>
 <style>
-body{
+
+*{box-sizing:border-box;}
+
+html,body{
     margin:0;
+    padding:0;
+    width:100%;
+    min-height:100%;
     background:#000;
+    font-family:sans-serif;
+}
+
+body{
     display:flex;
     justify-content:center;
     align-items:center;
-    height:100vh;
+    min-height:100vh;
     overflow:hidden;
-    font-family:sans-serif;
 }
 
 #game{
     position:relative;
-    width:95vw;
-    max-width:1400px;
-    aspect-ratio:1365/1024;
+    width:min(96vw, 1400px);
     background:#000;
+    overflow:hidden;
 }
 
-#bg{
+.bgImg{
     width:100%;
     height:100%;
     display:block;
     object-fit:contain;
+    pointer-events:none;
+    user-select:none;
 }
 
 .hotspot{
@@ -36,52 +47,29 @@ body{
     border:none;
     cursor:pointer;
     z-index:20;
+    padding:0;
+    margin:0;
 }
 
-/* 클릭 위치 확인할 때만 주석 해제
+/* 클릭 위치 확인용
 .hotspot{
     outline:3px solid red;
     background:rgba(255,0,0,0.15);
 }
 */
 
-/* 성 부분 */
-.castleArea{
-    left:12%;
-    top:2%;
-    width:76%;
-    height:36%;
-}
-
-/* 악마 */
-.devil{
-    left:35%;
-    top:35%;
-    width:28%;
-    height:31%;
-    z-index:30;
-}
-
-/* 용사와 마법사 */
-.party{
-    left:33%;
-    top:70%;
-    width:32%;
-    height:27%;
-    z-index:30;
-}
-
-/* 전체 바닥/그 외 */
-.otherArea{
+#lifeUI{
     position:absolute;
-    inset:0;
-    background:transparent;
-    border:none;
-    cursor:pointer;
-    z-index:1;
+    top:2.5%;
+    right:2.5%;
+    z-index:999;
+    font-size:clamp(15px,2.4vw,26px);
+    letter-spacing:2px;
+    text-shadow:2px 2px 0 #000;
+    user-select:none;
+    pointer-events:none;
 }
 
-/* 대사창 */
 #dialogueWrap{
     position:absolute;
     left:50%;
@@ -93,6 +81,7 @@ body{
     justify-content:center;
     align-items:center;
     z-index:60;
+    pointer-events:none;
 }
 
 #dialogueFallback{
@@ -101,22 +90,50 @@ body{
     background:rgba(20,12,5,0.9);
     border:5px double #d7a74b;
     border-radius:16px;
-    box-shadow:0 0 20px rgba(0,0,0,0.9);
+}
+
+#dialogueImage{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:fill;
+    z-index:1;
 }
 
 #dialogueText{
     position:relative;
     z-index:2;
-    width:82%;
+    width:76%;
     text-align:center;
-    color:#ffe6a8;
-    font-size:clamp(18px,2vw,30px);
+    font-size:clamp(13px,2.2vw,30px);
     font-weight:bold;
-    line-height:1.45;
+    line-height:1.42;
     word-break:keep-all;
+    white-space:pre-line;
 }
 
-/* 팝업 */
+#dialogueText::after,
+.typeText::after{
+    content:"";
+    display:inline-block;
+    width:0.55em;
+    height:1em;
+    margin-left:4px;
+    vertical-align:-0.12em;
+    background:currentColor;
+    animation:blinkCursor 0.75s steps(1) infinite;
+}
+
+#dialogueText.done::after,
+.typeText.done::after{
+    display:none;
+}
+
+@keyframes blinkCursor{
+    50%{opacity:0;}
+}
+
 #popup{
     position:fixed;
     inset:0;
@@ -128,8 +145,8 @@ body{
 }
 
 #popupPanel{
-    width:min(92vw,800px);
-    max-height:92vh;
+    width:min(94vw,920px);
+    max-height:94vh;
     overflow:auto;
     background:#1b120a;
     color:white;
@@ -142,7 +159,7 @@ body{
 
 #popupPanel img{
     width:100%;
-    max-height:68vh;
+    max-height:72vh;
     object-fit:contain;
     border-radius:8px;
     margin-bottom:12px;
@@ -160,162 +177,247 @@ button{
     color:#2b1607;
 }
 
-#lifeUI{
-    position:absolute;
-    top:14px;
-    right:18px;
-    left:auto;
-    z-index:999;
-    font-size:24px;
-    letter-spacing:2px;
-    text-shadow:2px 2px 0 #000;
-    user-select:none;
-    pointer-events:none;
+input{
+    padding:10px;
+    width:130px;
+    font-size:20px;
+    text-align:center;
+    border-radius:8px;
+    border:2px solid #8d612b;
 }
 
+.mapWrap{
+    position:relative;
+    width:100%;
+    margin-top:10px;
+}
+
+.mapWrap img{
+    width:100%;
+    max-height:none!important;
+    display:block;
+}
+
+@media (orientation: portrait){
+    body{
+        align-items:flex-start;
+        padding-top:8vh;
+        overflow:auto;
+    }
+
+    #game{
+        width:100vw;
+        max-width:none;
+    }
+
+    #dialogueWrap{
+        width:96%;
+        height:22%;
+        bottom:1.2%;
+    }
+
+    #dialogueText{
+        width:70%;
+        font-size:clamp(12px,3.3vw,20px);
+        line-height:1.35;
+    }
+
+    #lifeUI{
+        top:2%;
+        right:2%;
+        font-size:clamp(14px,4vw,22px);
+    }
+
+    #popupPanel{
+        width:96vw;
+        padding:14px;
+    }
+
+    button{
+        font-size:16px;
+        padding:9px 14px;
+    }
+}
+
+#game{aspect-ratio:1365/1024;}
+#dialogueText{color:#2b1607;transform:translateY(6px);}
+.castleArea{left:12%;top:2%;width:76%;height:36%;}
+.devil{left:35%;top:35%;width:28%;height:31%;z-index:30;}
+.party{left:33%;top:70%;width:32%;height:27%;z-index:30;}
+.otherArea{position:absolute;inset:0;background:transparent;border:none;cursor:pointer;z-index:1;}
+#defeatOverlay{position:fixed;inset:0;background:#000;display:none;justify-content:center;align-items:center;z-index:200;}
+#defeatScene{position:relative;width:min(96vw,1365px);aspect-ratio:1365/1024;background:#000;}
+#defeatScene>img{width:100%;height:100%;object-fit:contain;display:block;}
+#defeatDialogue{position:absolute;left:50%;top:4%;transform:translateX(-50%);width:82%;height:18%;display:flex;justify-content:center;align-items:center;}
+#defeatDialogue img{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;}
+#defeatText{position:relative;z-index:2;width:75%;text-align:center;color:#2b1607;font-size:clamp(20px,2.3vw,34px);font-weight:bold;line-height:1.45;transform:translateY(6px);word-break:keep-all;}
+#enterCastleBtn{position:absolute;left:50%;bottom:5%;transform:translateX(-50%);font-size:clamp(18px,2vw,28px);padding:14px 28px;}
 </style>
 </head>
-
 <body>
-
 <div id="game">
 <div id="lifeUI">❤️❤️❤️</div>
-    <img id="bg" src="./images/devil_go.webp" alt="마왕성 입구">
+<img id="bg" class="bgImg" src="./images/devil_go.webp" alt="마왕성 입구">
 
-    <button class="otherArea" onclick="say('돌아가는 건 안 돼. 앞으로 나아가자.')"></button>
+<button class="otherArea" onclick="say('돌아가는 건 안 돼. 앞으로 나아가자.')"></button>
+<button class="hotspot castleArea" onclick="say('위압감이 느껴진다. 이 성 안에 들어가야한다니...')"></button>
+<button class="hotspot devil" onclick="openDevilProblem()"></button>
+<button class="hotspot party" onclick="say('우리가 해낼 수 있을까?')"></button>
 
-    <button class="hotspot castleArea" onclick="say('위압감이 느껴진다. 이 성 안에 들어가야한다니...')"></button>
-    <button class="hotspot devil" onclick="openDevilProblem()"></button>
-    <button class="hotspot party" onclick="say('우리가 해낼 수 있을까?')"></button>
-
-    <div id="dialogueWrap">
-        <div id="dialogueFallback"></div>
-        <img id="dialogueImage" src="./images/de_dia.webp" alt="">
-        <div id="dialogueText"></div>
-    </div>
+<div id="dialogueWrap">
+<div id="dialogueFallback"></div>
+<img id="dialogueImage" src="./images/de_dia.webp" alt="">
+<div id="dialogueText"></div>
+</div>
 </div>
 
-<div id="popup">
-    <div id="popupPanel"></div>
+<div id="popup"><div id="popupPanel"></div></div>
+
+<div id="defeatOverlay">
+<div id="defeatScene">
+<img src="./images/devil_die.webp" alt="쓰러진 악마">
+<div id="defeatDialogue">
+<img src="./images/de_dia.webp" alt="">
+<div id="defeatText">악마가 쓰러졌다.<br>마왕성 안으로 들어가자.</div>
+</div>
+<button id="enterCastleBtn" onclick="goFinal()">마왕성으로 들어가자!</button>
+</div>
 </div>
 
 <script>
+const defeatOverlay=document.getElementById("defeatOverlay");
 
-let wrongCount = 0;
-const MAX_WRONG = 3;
+const MAX_WRONG=3;
+let wrongCount=Number(localStorage.getItem("wrongCount")||"0");
+let timer=null;
+let typingTimer=null;
 
+const dialogueWrap=document.getElementById("dialogueWrap");
+const dialogueText=document.getElementById("dialogueText");
+const popup=document.getElementById("popup");
+const popupPanel=document.getElementById("popupPanel");
+const dialogueImage=document.getElementById("dialogueImage");
+const lifeUI=document.getElementById("lifeUI");
 
-function updateLives(){
-    const lifeUI = document.getElementById("lifeUI");
-    if(!lifeUI){ return; }
-
-    const remain = MAX_WRONG - wrongCount;
-    let hearts = "";
-
-    for(let i = 0; i < MAX_WRONG; i++){
-        if(i < remain){
-            hearts += "❤️";
-        }else{
-            hearts += "🤍";
-        }
-    }
-
-    lifeUI.innerText = hearts;
+if(dialogueImage){
+    dialogueImage.onerror=function(){
+        dialogueImage.style.display="none";
+    };
 }
 
-function wrongAnswer(message = "틀렸다..."){
-    wrongCount++;
+function updateLives(){
+    if(!lifeUI){return;}
+    let remain=MAX_WRONG-wrongCount;
+    if(remain<0){remain=0;}
+    let hearts="";
+    for(let i=0;i<MAX_WRONG;i++){
+        hearts += i<remain ? "❤️" : "🤍";
+    }
+    lifeUI.innerText=hearts;
+}
 
+function typeText(element,text,speed=28,afterDone=null){
+    clearInterval(typingTimer);
+    element.classList.remove("done");
+    element.innerText="";
+    let i=0;
+    typingTimer=setInterval(function(){
+        element.innerText=text.slice(0,i);
+        i++;
+        if(i>text.length){
+            clearInterval(typingTimer);
+            element.classList.add("done");
+            if(afterDone){afterDone();}
+        }
+    },speed);
+}
+
+function say(text){
+    clearTimeout(timer);
+    clearInterval(typingTimer);
+    dialogueWrap.style.display="flex";
+    typeText(dialogueText,text,28);
+    timer=setTimeout(function(){
+        clearInterval(typingTimer);
+        dialogueWrap.style.display="none";
+    },4300);
+}
+
+function openPopup(html){
+    clearTimeout(timer);
+    clearInterval(typingTimer);
+    if(dialogueWrap){dialogueWrap.style.display="none";}
+    popupPanel.innerHTML=html;
+    popup.style.display="flex";
+}
+
+function closePopup(){
+    popup.style.display="none";
+}
+
+popup.addEventListener("click",function(e){
+    if(e.target===popup){
+        closePopup();
+    }
+});
+
+function wrongAnswer(message="틀렸다..."){
+    wrongCount++;
+    localStorage.setItem("wrongCount",String(wrongCount));
     updateLives();
 
-    if(wrongCount >= MAX_WRONG){
+    if(wrongCount>=MAX_WRONG){
         showFail();
     }else{
-        say(message + "\n남은 기회: " + (MAX_WRONG - wrongCount));
+        say(message+"\n남은 기회: "+(MAX_WRONG-wrongCount));
     }
 }
 
 function showFail(){
     openPopup(`
         <img src="./images/fail.webp" alt="실패">
-        <p style="
-            font-size:28px;
-            font-weight:bold;
-            line-height:1.5;
-        ">
+        <p style="font-size:28px;font-weight:bold;line-height:1.5;">
             모든 기회를 잃었다...<br>
             다시 도전해보자.
         </p>
-
-        <button onclick="restartAdventure()">
-            처음부터 다시하기
-        </button>
+        <button onclick="restartAdventure()">처음부터 다시하기</button>
     `);
 }
 
 function restartAdventure(){
-    window.location.href = "index.html";
+    localStorage.setItem("wrongCount","0");
+    window.location.href="index.html";
 }
 
-let timer = null;
+updateLives();
 
-const dialogueWrap = document.getElementById("dialogueWrap");
-const dialogueText = document.getElementById("dialogueText");
-const popup = document.getElementById("popup");
-const popupPanel = document.getElementById("popupPanel");
-
-function say(text){
-    clearTimeout(timer);
-    dialogueText.innerText = text;
-    dialogueWrap.style.display = "flex";
-
-    timer = setTimeout(function(){
-        dialogueWrap.style.display = "none";
-    },3000);
-}
-
-function openPopup(html){
-    clearTimeout(timer);
-    dialogueWrap.style.display = "none";
-    popupPanel.innerHTML = html;
-    popup.style.display = "flex";
-}
-
-function closePopup(){
-    popup.style.display = "none";
-}
-
-popup.addEventListener("click", function(e){
-    if(e.target === popup){
-        closePopup();
-    }
-});
 
 function openDevilProblem(){
     openPopup(`
         <img src="./images/devil_door.webp" alt="악마 문제">
         <div>
-            <input id="devilAnswer" placeholder="정답 입력"><button onclick="checkDevil()">제출</button><button onclick="closePopup()">닫기</button>
+            <input id="devilAnswer" placeholder="정답 입력">
+            <button onclick="checkDevil()">제출</button>
+            <button onclick="closePopup()">닫기</button>
         </div>
     `);
 }
 
-document.addEventListener("DOMContentLoaded", updateLives);
-
 function checkDevil(){
     const answer=document.getElementById("devilAnswer").value.trim();
+
     if(answer==="-32"){
         closePopup();
-        openPopup(`<img src="./images/devil_die.webp" alt="악마 격파">
-        <p style="font-size:24px;font-weight:bold;">악마가 쓰러졌다.<br>마왕성 안으로 들어가자.</p>
-        <button onclick="goFinal()">마왕성으로 들어가자!</button>`);
+        defeatOverlay.style.display="flex";
     }else{
         closePopup();
         wrongAnswer("악마가 비웃고 있다...");
     }
 }
-function goFinal(){ window.location.href="final.html"; }
-</script>
 
+function goFinal(){
+    window.location.href="final.html";
+}
+</script>
 </body>
 </html>
