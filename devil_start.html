@@ -95,7 +95,7 @@ body{
     z-index:60;
 }
 
-#dialogueBox{
+#dialogueFallback{
     position:absolute;
     inset:0;
     background:rgba(20,12,5,0.9);
@@ -163,10 +163,11 @@ button{
 #lifeUI{
     position:absolute;
     top:14px;
-    left:14px;
+    right:18px;
+    left:auto;
     z-index:999;
-    font-size:38px;
-    letter-spacing:4px;
+    font-size:24px;
+    letter-spacing:2px;
     text-shadow:2px 2px 0 #000;
     user-select:none;
     pointer-events:none;
@@ -188,7 +189,8 @@ button{
     <button class="hotspot party" onclick="say('우리가 해낼 수 있을까?')"></button>
 
     <div id="dialogueWrap">
-        <div id="dialogueBox"></div>
+        <div id="dialogueFallback"></div>
+        <img id="dialogueImage" src="./images/de_dia.webp" alt="">
         <div id="dialogueText"></div>
     </div>
 </div>
@@ -291,14 +293,28 @@ popup.addEventListener("click", function(e){
 
 function openDevilProblem(){
     openPopup(`
-        <img src="./images/devil.webp" alt="악마 문제">
+        <img src="./images/devil_door.webp" alt="악마 문제">
         <div>
-            <button onclick="closePopup()">닫기</button>
+            <input id="devilAnswer" placeholder="정답 입력"><button onclick="checkDevil()">제출</button><button onclick="closePopup()">닫기</button>
         </div>
     `);
 }
 
 document.addEventListener("DOMContentLoaded", updateLives);
+
+function checkDevil(){
+    const answer=document.getElementById("devilAnswer").value.trim();
+    if(answer==="-32"){
+        closePopup();
+        openPopup(`<img src="./images/devil_die.webp" alt="악마 격파">
+        <p style="font-size:24px;font-weight:bold;">악마가 쓰러졌다.<br>마왕성 안으로 들어가자.</p>
+        <button onclick="goFinal()">마왕성으로 들어가자!</button>`);
+    }else{
+        closePopup();
+        wrongAnswer("악마가 비웃고 있다...");
+    }
+}
+function goFinal(){ window.location.href="final.html"; }
 </script>
 
 </body>

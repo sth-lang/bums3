@@ -101,7 +101,7 @@ body{
     z-index:50;
 }
 
-#dialogueBox{
+#dialogueFallback{
     position:absolute;
     inset:0;
     background:rgba(20,12,5,0.9);
@@ -226,10 +226,11 @@ input{
 #lifeUI{
     position:absolute;
     top:14px;
-    left:14px;
+    right:18px;
+    left:auto;
     z-index:999;
-    font-size:38px;
-    letter-spacing:4px;
+    font-size:24px;
+    letter-spacing:2px;
     text-shadow:2px 2px 0 #000;
     user-select:none;
     pointer-events:none;
@@ -252,7 +253,8 @@ input{
     <button class="hotspot leftHouse" onclick="say('여긴 그냥 일반 집인가봐. 들어가지 말자.')"></button>
 
     <div id="dialogueWrap">
-        <div id="dialogueBox"></div>
+        <div id="dialogueFallback"></div>
+        <img id="dialogueImage" src="./images/vi_dia.webp" alt="">
         <div id="dialogueText"></div>
     </div>
 
@@ -327,9 +329,12 @@ let timer = null;
 
 const dialogueWrap = document.getElementById("dialogueWrap");
 const dialogueText = document.getElementById("dialogueText");
+const dialogueImage = document.getElementById("dialogueImage");
 const popup = document.getElementById("popup");
 const popupPanel = document.getElementById("popupPanel");
 const sleepOverlay = document.getElementById("sleepOverlay");
+
+if(dialogueImage){dialogueImage.onerror=function(){dialogueImage.style.display="none";};}
 
 function say(text){
     clearTimeout(timer);
@@ -364,7 +369,8 @@ function openFountain(){
         <div>
             <input id="waterAnswer" placeholder="정답">
             <button onclick="checkFountain()">제출</button>
-            <button onclick="closePopup()">닫기</button>
+            <button onclick="goCastle()">마왕성으로 바로 이동</button>
+        <button onclick="closePopup()">닫기</button>
         </div>
     `);
 }
@@ -375,7 +381,7 @@ function checkFountain(){
     if(answer === "27"){
         fountainSolved = true;
         closePopup();
-        say("분수의 비밀을 알아냈다.");
+        say("분수의 비밀을 알아냈다.\n분수에서 갑자기 돈이 쏟아진다!");
     }else{
         closePopup();
         wrongAnswer("분수의 물소리만 들린다... 다시 생각해보자.");
@@ -392,11 +398,11 @@ function openShop(){
         <img src="./images/shop.webp" alt="상점 문제">
         <p style="font-size:20px; font-weight:bold;">정답을 고르시오.</p>
         <div>
-            <button onclick="toggleChoice('ㄱ')" id="choiceㄱ">ㄱ</button>
-            <button onclick="toggleChoice('ㄴ')" id="choiceㄴ">ㄴ</button>
-            <button onclick="toggleChoice('ㄷ')" id="choiceㄷ">ㄷ</button>
-            <button onclick="toggleChoice('ㄹ')" id="choiceㄹ">ㄹ</button>
-            <button onclick="toggleChoice('ㅁ')" id="choiceㅁ">ㅁ</button>
+            <button onclick="toggleChoice('가')" id="choice가">가</button>
+            <button onclick="toggleChoice('나')" id="choice나">나</button>
+            <button onclick="toggleChoice('다')" id="choice다">다</button>
+            <button onclick="toggleChoice('라')" id="choice라">라</button>
+            <button onclick="toggleChoice('마')" id="choice마">마</button>
         </div>
         <div>
             <button onclick="checkShop()">제출</button>
@@ -424,7 +430,7 @@ function toggleChoice(choice){
 function checkShop(){
     const sorted = selectedChoices.slice().sort().join(",");
 
-    if(sorted === "ㄱ,ㅁ"){
+    if(sorted === "가,마"){
         shopSolved = true;
         showMap();
     }else{
@@ -449,7 +455,7 @@ function showMap(){
 }
 
 function goCastle(){
-    window.location.href = "castle.html";
+    window.location.href = "devil_start.html";
 }
 
 function sleepAtInn(){

@@ -5,15 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>마법사의 방</title>
 <style>
-body{margin:0;background:#111;display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif}#game{position:relative;width:768px;height:512px}#room{width:100%;height:100%;display:block}.hotspot{position:absolute;background:transparent;border:none;cursor:pointer}.book{left:180px;top:150px;width:70px;height:50px}.crystal{left:355px;top:220px;width:80px;height:80px}.window{left:315px;top:70px;width:120px;height:120px}.bed{left:70px;top:250px;width:130px;height:130px}.closet{left:530px;top:100px;width:140px;height:170px}#dialogue{position:absolute;left:0;bottom:0;width:100%;background:rgba(0,0,0,.9);color:white;padding:20px;box-sizing:border-box;font-size:20px;white-space:pre-line}#popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);display:none;justify-content:center;align-items:center}.popup-content{background:#222;padding:20px;border-radius:10px;text-align:center;color:white;max-width:90%}.popup-content img{max-width:500px;width:100%}input{margin:10px;padding:10px;font-size:18px;width:100px}button.choice{margin:5px;padding:10px 20px;font-size:18px}.close-btn{margin-top:15px;padding:10px 20px}
+body{margin:0;background:#111;display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif}#game{position:relative;width:768px;height:512px}#room{width:100%;height:100%;display:block}.hotspot{position:absolute;background:transparent;border:none;cursor:pointer}.book{left:23%;top:35%;width:13%;height:12%;}.crystal{left:47%;top:51%;width:15%;height:16%;}.window{left:42%;top:10%;width:19%;height:25%;}.bed{left:6%;top:53%;width:22%;height:27%;}.closet{left:72%;top:31%;width:18%;height:27%;}#dialogue{position:absolute;left:0;bottom:0;width:100%;background:rgba(0,0,0,.9);color:white;padding:20px;box-sizing:border-box;font-size:20px;white-space:pre-line}#popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);display:none;justify-content:center;align-items:center}.popup-content{background:#222;padding:20px;border-radius:10px;text-align:center;color:white;max-width:90%}.popup-content img{max-width:500px;width:100%}input{margin:10px;padding:10px;font-size:18px;width:100px}button.choice{margin:5px;padding:10px 20px;font-size:18px}.close-btn{margin-top:15px;padding:10px 20px}
 
 #lifeUI{
     position:absolute;
     top:14px;
-    left:14px;
+    right:18px;
+    left:auto;
     z-index:999;
-    font-size:38px;
-    letter-spacing:4px;
+    font-size:24px;
+    letter-spacing:2px;
     text-shadow:2px 2px 0 #000;
     user-select:none;
     pointer-events:none;
@@ -97,9 +98,23 @@ function closePopup(){document.getElementById('popup').style.display='none';}
 function openBook(){document.getElementById('popup').style.display='flex';document.getElementById('popup-content').innerHTML=`<img src="./images/book_problem.webp" alt="책 문제"><div><input id="xAnswer" placeholder="x"><input id="yAnswer" placeholder="y"></div><button class="choice" onclick="checkBook()">제출</button><br><button class="close-btn" onclick="closePopup()">닫기</button>`;}
 function checkBook(){const x=document.getElementById('xAnswer').value.trim();const y=document.getElementById('yAnswer').value.trim();if(x==='3'&&y==='5'){bookSolved=true;closePopup();showDialogue('마법구를 해석하는 방법을 알아냈다.');}else{wrongAnswer("틀렸다... 다시 생각해보자.");}}
 function openCrystal(){if(!bookSolved){showDialogue('수정구의 빛이 보이긴 하지만.. 해석하려면 먼저 해석하는 방법을 알아내야할 거 같다.');return;}document.getElementById('popup').style.display='flex';document.getElementById('popup-content').innerHTML=`<img src="./images/crystal_problem.webp" alt="수정구 문제"><div><button class="choice" onclick="checkCrystal(1)">1</button><button class="choice" onclick="checkCrystal(2)">2</button><button class="choice" onclick="checkCrystal(3)">3</button><button class="choice" onclick="checkCrystal(4)">4</button><button class="choice" onclick="checkCrystal(5)">5</button></div><button class="close-btn" onclick="closePopup()">닫기</button>`;}
-function checkCrystal(answer){if(answer===3){hasMap=true;closePopup();showDialogue('마법구를 해석해 가야할 곳을 알아냈다.\n우리는 용사를 만나러 가야한다.\n용사의 마을로 이동하자.\n\n🗺️ 지도를 얻었다!');}else{wrongAnswer("수정구의 빛이 흔들린다...");}}
+function checkCrystal(answer){if(answer===3){hasMap=true;showMap();}else{wrongAnswer("수정구의 빛이 흔들린다...");}}
 
 document.addEventListener("DOMContentLoaded", updateLives);
+
+function showMap(){
+    document.getElementById('popup').style.display='flex';
+    document.getElementById('popup-content').innerHTML=`
+        <p style="font-size:22px;font-weight:bold;">마법구를 해석해 가야할 곳을 알아냈다.<br>우리는 용사를 만나러 가야한다.<br>용사의 마을로 이동하자.</p>
+        <div style="position:relative;width:100%;margin-top:10px;">
+            <img src="./images/maps.webp" alt="지도">
+            <button onclick="goNextRoom()" style="position:absolute;left:7%;top:68%;width:28%;height:24%;background:transparent;border:none;cursor:pointer;"></button>
+        </div>
+        <p>지도 왼쪽 아래의 용사의 마을을 누르거나 아래 버튼을 눌러 이동하자.</p>
+        <button class="choice" onclick="goNextRoom()">용사의 마을로 이동</button>
+        <button class="close-btn" onclick="closePopup()">닫기</button>`;
+}
+function goNextRoom(){ window.location.href='village.html'; }
 </script>
 </body>
 </html>
